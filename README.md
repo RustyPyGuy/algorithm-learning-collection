@@ -12,7 +12,7 @@ variables to test ideas.  Please be kind with critiques. :-)
 # Source Material, Inspiration
 Selected algorithms are based on lessons and pseudocode from: 
 
-  *Algorithms Illuminated Part 1: The Basics* by Tim Roughgarden 
+####  *Algorithms Illuminated Part 1: The Basics* by Tim Roughgarden 
 
 This is an excellent book. Where appropriate I give references to the book
 chapters in the code and pseudocode is implemented as fair use.
@@ -54,20 +54,4 @@ potential to increase visibility, development, and collaboration.  This code is
 released under the LGPL license.  It is meant for learning and practice, and I
 want it to be free.  If somehow you think this code is useful under a more
 permissive license, I would be a a bit confused and surprised that anyone would
-find much use for these basic things, but I would welcome your contact.
---RustyPyGuy
-=======
-This project is an exercise of implementing primitive algorithms in Rust.  It
-was written to learn both algorithm implementation and the Rust language at the
-same time by an advanced beginner programmer. It is not lost on me that I am
-reinventing many wheels here.  That's somewhat the point.  I attempt use
-features specific to Rust such as alternating between ownership and borrowing
-to test ideas.  Please be kind with critiques. :-)
-
-Selected algorithms are based on lessons and pseudocode from: 
-	Algoritms Illuminated by Tim Roughgarten 
-Where appropriate I give references to the book chapters. 
-
-This code is releaed under the LGPL license.  It is meant for learning and
-practice.  If somehow you think this code is useful under a less restrictive license
-for implementation, I will consider relicensing it. Please contact me.
+find much use for these basic things, but I would welcome your contact.  -RustyPyGuy
