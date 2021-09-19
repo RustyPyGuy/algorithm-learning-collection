@@ -38,7 +38,7 @@ let sorted_y_pairs: Vec<[i32;2]> = merge_sort_vector_2d(&input_coord_vec, 1);
     let return_struct = PreprocessedCords {
         x_sorted: sorted_x_pairs,
         y_sorted: sorted_y_pairs,
-    };  // semicolon! 
+    };  // semicolon!
     return return_struct;
 }
 
@@ -409,24 +409,16 @@ mod tests {
             let coord_struct = preprocess_coordinate_vector(&mut test1_vec);
             let closest_pair_exhaustive: Vec<[i32;2]> = closest_pair_exhaustive(test1_vec);
             let closest_pair_efficient: Vec<[i32;2]> = closest_pair_2d(coord_struct.x_sorted, coord_struct.y_sorted);
-            println!("results - exhaustive: {:?} d: {} | efficient: {:?} d: {}", 
-                     closest_pair_exhaustive, distance_pair(&closest_pair_exhaustive), 
+            println!("results - exhaustive: {:?} d: {} | efficient: {:?} d: {}",
+                     closest_pair_exhaustive, distance_pair(&closest_pair_exhaustive),
                      closest_pair_efficient, distance_pair(&closest_pair_efficient));
-            if !(closest_pair_exhaustive == closest_pair_efficient || 
+            if !(closest_pair_exhaustive == closest_pair_efficient ||
                 closest_pair_exhaustive == invert_pair(closest_pair_efficient)) {
                 fail_counter += 1
             }
         }
         println!("Fail counts {} of {} runs", fail_counter, runs);
         assert!(fail_counter==0);
-
-        // let mut test1_vec: Vec<[i32;2]> = generate_random_vector_2d(_TEST_VEC, _TEST_VEC_RANGE);
-        // let coord_struct = preprocess_coordinate_vector(&mut test1_vec);
-        // let closest_pair_exhaustive: Vec<[i32;2]> = closest_pair_exhaustive(test1_vec);
-        // let closest_pair_efficient: Vec<[i32;2]> = closest_pair_2d(coord_struct.x_sorted, coord_struct.y_sorted);
-        // println!("results - exhaustive: {:?} d: {} | efficient: {:?} d: {}", closest_pair_exhaustive, distance_pair(&closest_pair_exhaustive), closest_pair_efficient, distance_pair(&closest_pair_efficient));
-        // assert!(closest_pair_exhaustive == closest_pair_efficient || closest_pair_exhaustive == invert_pair(closest_pair_efficient));
     }
 
 }
-

@@ -1,4 +1,5 @@
 /target
 __*
+session
 *.session
 Cargo.lock

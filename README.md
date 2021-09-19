@@ -15,7 +15,7 @@ Selected algorithms are based on lessons and pseudocode from:
 ####  *Algorithms Illuminated Part 1: The Basics* by Tim Roughgarden 
 
 This is an excellent book. Where appropriate I give references to the book
-chapters in the code and pseudocode is implemented as fair use.
+chapters in the code and pseudocode is implemented as fair use of the text.
 
 # Included Algorithms
 - Merge Sort of a Vector using the borrowing model in Rust
@@ -23,7 +23,7 @@ chapters in the code and pseudocode is implemented as fair use.
 - Merge Sort of a Vector of coordinate pairs (vector of 2-element arrays) on either x or y value
 - Closest Pair Algorithm using a divide and conquer approach for selecting the
 two pairs in a coordinate vector with the smallest distance
-*NOTE: Closest Pair Algorithm is currently failing tests*
+*NOTE: Closest Pair Algorithm is currently failing tests. Still working on this one.*
 - Test functions to check that the above algorithms are working as designed using randomized data and more primitive processor-expensive algorithms for comparison.
 
 # Use
@@ -32,7 +32,7 @@ Prior to first build:
 
 To run the multiple algorithms with timing details output to console.
 
-`cargo run --release` The release flag is important unless you want to run really slow. By default it will print out timings of execution.
+`cargo run --release` The release flag is important unless you want to run really slow. By default it will print out timings of execution so that you can see the timed progression of execution time of increased data.
 
 To run the test suite:
 `cargo test`
@@ -48,10 +48,13 @@ This is an ongoing project as I continue my study.  Some general areas of improv
 
 
 # License
-I believe that software licenses protect the author from legal liability and
-create a community understanding of the purpose of its use and have the
-potential to increase visibility, development, and collaboration.  This code is
-released under the LGPL license.  It is meant for learning and practice, and I
-want it to be free.  If somehow you think this code is useful under a more
-permissive license, I would be a a bit confused and surprised that anyone would
-find much use for these basic things, but I would welcome your contact.  -RustyPyGuy
+*I believe in strong open source licenses, even for small projects like this.*
+
+The Image Clock, a python clock that displays artwork to tell the time, and its component and supporting files (analog timepiece, file parser, and others) Copyright (C) 2021 github user: RustyPyGuy
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+See the file LICENSE for full details of the GPL v3.0.
