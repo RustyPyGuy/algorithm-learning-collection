@@ -127,7 +127,7 @@ pub fn closest_pair_2d(x_sorted_vec: Vec<[i32;2]>, y_sorted_vec: Vec<[i32;2]>) -
         let len2 = distance_bound_vec.len();
         let mut best_pair: Vec<[i32;2]> = Vec::with_capacity(2);
         // let mut best_pair_distance_squared: i64 = distance_squared_in;
-        let mut best_pair_distance_squared: i64 = i64::MAX;
+        let mut best_pair_distance_squared: i64 = std::i64::MAX;
         let test_max: usize;
         if len2 == 0 {
             test_max = 0;
@@ -171,11 +171,11 @@ pub fn closest_pair_2d(x_sorted_vec: Vec<[i32;2]>, y_sorted_vec: Vec<[i32;2]>) -
     /// Returns the maximum integer value if the two pairs are equal or an incorrect number of pairs are given.
     fn distance_squared(pair: &Vec<[i32;2]>) -> i64 {
         if pair.len() != 2{
-            return i64::MAX;
+            return std::i64::MAX;
         }
         // returns max value to reduce tests in other functions if comparison points are identical.
         if pair[0] == pair[1]{
-            return i64::MAX;
+            return std::i64::MAX;
         }
         // Rust doesn't have built-in exponentiation without
         // importing a library. Return C^2 = (Ax-Bx)^2 + (Ay-By)^2
@@ -260,7 +260,7 @@ pub fn generate_random_pairs(vec_size: i32, max_value: i32) -> Vec<[i32;2]> {
     if vec_size == 0 {
         return Vec::new();
     }
-     if vec_size > i32::MAX - 2 {
+     if vec_size > std::i32::MAX - 2 {
         // Two Billion One Hundred Million-ish is the limit.
         panic!("Requested vector vec_size exceeds appoximate max allowable value of an i32.");
     }
@@ -287,7 +287,7 @@ pub fn closest_pair_exhaustive(pair_in: Vec<[i32;2]>) -> Vec<[i32;2]> {
         return Vec::new();
     }
     let mut distance_squared_test_pair: i64;
-    let mut distance_squared_best_pair: i64 = i64::MAX;
+    let mut distance_squared_best_pair: i64 = std::i64::MAX;
     let mut winning_pair: Vec<[i32;2]>  = Vec::new();
     let mut test_pair: Vec<[i32;2]>; // = Vec::new();
     for i in 0..len {
