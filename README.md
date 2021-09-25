@@ -50,7 +50,7 @@ This is an ongoing project as I continue my study.  Some general areas of improv
 # License
 *I believe in strong open source licenses, even for small projects like this.*
 
-The Image Clock, a python clock that displays artwork to tell the time, and its component and supporting files (analog timepiece, file parser, and others) Copyright (C) 2021 github user: RustyPyGuy
+The Algorithm learning collection, a set of basic algorithms for improving programming skills and understanding of computer science principles, Copyright (C) 2021 github user: RustyPyGuy
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

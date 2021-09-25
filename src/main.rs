@@ -10,8 +10,7 @@
  *          Algoritms Illuminated by Tim Roughgarten
  * Where appropriate I give references to the book chapters. 
  *
- * This code is releaed under the LGPL license.  It is meant for learning.  If somehow you think
- * this code is useful under a different license, please conatct me.
+ * This code is releaed under the GPL v 3.0 license.  It is meant for learning.
  */
 
 mod primitive_sorting;
@@ -21,33 +20,49 @@ mod coordinate;
 use std::time::{/*Duration,*/ Instant};
 
 fn main() {
-println!("Welcome to the sorting and coordinate function exercise.");
-println!("Sorting coordinate pairs.");
-for _ in 1..10{
+println!("Welcome to the sorting and coordinate function exercise.\n\nSorting coordinate pairs.");
+for _ in 1..5{
+    println!("---------------------------------------------------------");
     run_closest_coordinate_2d(1_000_000,90_000_000);
 }
+println!("\n---------------------------------------------------------");
 println!("Creating random vectors, timing the sorts, and checking the results. Here we go!");
 run_sort_test_ownership(0,10);
 run_sort_test_borrowing(0,10);
+run_sort_builtin_slice_sort(0,10);
+run_sort_builtin_unstable_sort(0,10);
+println!("---------------------------------------------------------");
 run_sort_test_ownership(1,10);
 run_sort_test_borrowing(1,10);
+run_sort_builtin_slice_sort(1,10);
+run_sort_builtin_unstable_sort(1,10);
+println!("---------------------------------------------------------");
 run_sort_test_ownership(2,10);
 run_sort_test_borrowing(2,10);
+run_sort_builtin_slice_sort(2,10);
+run_sort_builtin_unstable_sort(2,10);
+println!("---------------------------------------------------------");
 run_sort_test_ownership(5,10);
 run_sort_test_borrowing(5,10);
+run_sort_builtin_slice_sort(5,10);
+run_sort_builtin_unstable_sort(5,10);
+
 let mut vlength = 10;
 let mut vrange = 100;
-// while vlength < 200_000_001 {
 // run sorting tests doubling in size for each run.
-while vlength < 1_000_001 {
+while vlength < 5_250_000 {
+    println!("---------------------------------------------------------");
     run_sort_test_ownership(vlength,vrange);
     run_sort_test_borrowing(vlength,vrange);
+    run_sort_builtin_slice_sort(vlength,vrange);
+    run_sort_builtin_unstable_sort(vlength,vrange);
     vlength = vlength * 2;
     vrange = vlength * 10;
     }
+println!("\nEnd of program.")
 } // end main()
 
-
+///Test the use of ownership of variables and transfer of scope in a simple merge sort.
 fn run_sort_test_ownership(vector_size: i32, value_range: i32) {
     let random_vec = primitive_sorting::generate_random_vector(vector_size, value_range);
     let start = Instant::now();
@@ -61,6 +76,7 @@ fn run_sort_test_ownership(vector_size: i32, value_range: i32) {
     }
 }
 
+///Test the use of borrowing of variables and writing tot he same variable in a simple merge sort.
 fn run_sort_test_borrowing(vector_size: i32, value_range: i32) {
     let mut random_vec = primitive_sorting::generate_random_vector(vector_size, value_range);
     let start = Instant::now();
@@ -74,6 +90,39 @@ fn run_sort_test_borrowing(vector_size: i32, value_range: i32) {
     }
 }
 
+/// Run a timing test of the builtin slice sort method using a stable Timsort algorithm.
+fn run_sort_builtin_slice_sort(vector_size: i32, value_range: i32) {
+    let mut random_vec = primitive_sorting::generate_random_vector(vector_size, value_range);
+    let random_vec_slice = &mut random_vec[..];
+    let start = Instant::now();
+    random_vec_slice.sort();
+    let duration = start.elapsed();
+    let check_vec = random_vec_slice.to_vec();
+    if check_sort_vec(&check_vec) == true {
+    println!("slice len: {} sorted (builtin slice.sort). Sort time: {:?}",random_vec.len(), duration);
+    }
+    else{
+    println!("slice len: {} -NOT- successfully sorted. Run time of sort: {:?}",random_vec.len(), duration);
+    }
+}
+
+/// Run a timing test of the builtin slice sort method using an unstable sorting algorithm.
+fn run_sort_builtin_unstable_sort(vector_size: i32, value_range: i32) {
+    let mut random_vec = primitive_sorting::generate_random_vector(vector_size, value_range);
+    let random_vec_slice = &mut random_vec[..];
+    let start = Instant::now();
+    random_vec_slice.sort_unstable();
+    let duration = start.elapsed();
+    let check_vec = random_vec_slice.to_vec();
+    if check_sort_vec(&check_vec) == true {
+    println!("slice len: {} sorted (builtin slice.unstable_sort). Sort time: {:?}",random_vec.len(), duration);
+    }
+    else{
+    println!("slice len: {} -NOT- successfully sorted. Run time of sort: {:?}",random_vec.len(), duration);
+    }
+}
+
+/// Run a timing test on the closest cooridnate algorithm.
 fn run_closest_coordinate_2d(vector_size: i32, value_range: i32){
     let mut rand_vec = coordinate::generate_random_vector_2d(vector_size,value_range);
     // let rand_vec = generate_random_pairs(vector_size,value_range);
