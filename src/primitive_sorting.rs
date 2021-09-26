@@ -145,6 +145,7 @@ pub fn check_sort_vec(vec_in: &Vec<i32>) -> bool {
     }
     return true;
 }
+
 // generate a vector with a specifed size and elements of random values to a max range
 pub fn generate_random_vector(vec_size: i32, max_value: i32) -> Vec<i32>{
     if vec_size == 0 {
@@ -180,5 +181,4 @@ mod tests {
     merge_sort_vec_borrow(&mut r_vec2);
     assert!(check_sort_vec(&r_vec2));
     }
-
 }

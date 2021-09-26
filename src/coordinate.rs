@@ -50,78 +50,92 @@ let sorted_y_pairs: Vec<[i32;2]> = merge_sort_vector_2d(&input_coord_vec, 1);
 /// duplicates and not matched.
 pub fn closest_pair_2d(x_sorted_vec: Vec<[i32;2]>, y_sorted_vec: Vec<[i32;2]>) -> Vec<[i32;2]> {
     let len = x_sorted_vec.len();
-    // base recursion case of a 1 or 2 element vector is input
-    if len == 1 || len == 2 {
+    // BASE RECURSION CASE of a 2 or 3 element vector is input
+    if len < 2 {
+        return Vec::new(); // If there are no pairs, return an empty vector.
+    }
+    if len == 2 {
         return x_sorted_vec;
+    }
+    if len == 3 {
+        return closest_two_pairs(x_sorted_vec[0..1].to_vec(),x_sorted_vec[1..2].to_vec());
     }
     // Split the vector in half sorted by x and y coordinates.
     let x_sorted_vec_left: Vec<[i32;2]> = x_sorted_vec[0..(len)/2].to_vec();
     let x_sorted_vec_right: Vec<[i32;2]> = x_sorted_vec[(len)/2..len].to_vec();
-    let y_sorted_vec_left: Vec<[i32;2]> = y_sorted_vec[0..(len)/2].to_vec();
-    let y_sorted_vec_right: Vec<[i32;2]> = y_sorted_vec[(len)/2..len].to_vec();
+    //NOTE: commented out due to algorithm correction. 
+    // let y_sorted_vec_left: Vec<[i32;2]> = y_sorted_vec[0..(len)/2].to_vec();
+    // let y_sorted_vec_right: Vec<[i32;2]> = y_sorted_vec[(len)/2..len].to_vec();
+    let y_sorted_vec_left: Vec<[i32;2]> = merge_sort_vector_2d(&x_sorted_vec_left , 1);
+    let y_sorted_vec_right: Vec<[i32;2]> = merge_sort_vector_2d(&x_sorted_vec_right , 1);
     // Recurse to find the closest pair in each half and calculate the distance.  using the
     // distance squared calculation and comparison to avoid performing a square root.
     let best_left: Vec<[i32;2]> = closest_pair_2d(x_sorted_vec_left, y_sorted_vec_left);
-    let distance_squared_left = distance_squared(&best_left);
     let best_right: Vec<[i32;2]> = closest_pair_2d(x_sorted_vec_right, y_sorted_vec_right);
-    let distance_squared_right = distance_squared(&best_right);
-    // Evalute which half has the lowest distance.
-    let best_distance_squared;
-    if distance_squared_left < distance_squared_right {
-        best_distance_squared = distance_squared_left;
-    }
-    else {
-        best_distance_squared = distance_squared_right;
-    }
+    // Evalute which half has the lowest distance. This will be used as a comparison measure
+    // to the best split pair.
+    let best_pair = closest_two_pairs(best_left, best_right);
+    let best_distance_squared = distance_squared(&best_pair);
+
     // Evaluate whether the closest pair that may be split between left and right vectors.
     // let best_split: Vec<[i32;2]> = closest_split_pair_2d(x_sorted_vec, y_sorted_vec, best_distance_squared);
     // TODO: fix borrowing in closest_split_pair_2d_lr function so that these variables are not redeclared.
     let x_sorted_vec_left: Vec<[i32;2]> = x_sorted_vec[0..(len)/2].to_vec();
     let x_sorted_vec_right: Vec<[i32;2]> = x_sorted_vec[(len)/2..len].to_vec();
-    let y_sorted_vec_left: Vec<[i32;2]> = y_sorted_vec[0..(len)/2].to_vec();
-    let y_sorted_vec_right: Vec<[i32;2]> = y_sorted_vec[(len)/2..len].to_vec();
+    // let y_sorted_vec_left: Vec<[i32;2]> = y_sorted_vec[0..(len)/2].to_vec();
+    // let y_sorted_vec_right: Vec<[i32;2]> = y_sorted_vec[(len)/2..len].to_vec();
+    let y_sorted_vec_left: Vec<[i32;2]> = merge_sort_vector_2d(&x_sorted_vec_left , 1);
+    let y_sorted_vec_right: Vec<[i32;2]> = merge_sort_vector_2d(&x_sorted_vec_right , 1);
     let best_split: Vec<[i32;2]> = closest_split_pair_2d_lr(x_sorted_vec_left, y_sorted_vec_left, x_sorted_vec_right, y_sorted_vec_right, best_distance_squared);
     // Compare the left, right, and split pairs for which is the best (closest) and return the
     // pair.
     // TODO: There are some inefficiencies with the below function repeating distance
     // calculations already performed.
-    let best_pair = closest_two_pairs(best_left, best_right);
+    // let best_pair = closest_two_pairs(best_left, best_right);
     return closest_two_pairs(best_pair, best_split); // if distances are equal, the split pair will be returned.
 
     /// function to separate the left half of a vector and the right half of the vector and return
     /// the closest split pair that bridgest this boundary.  This is integral to the closest pari
     /// algorithm.
-    fn closest_split_pair_2d_lr(x_sorted_vec_left: Vec<[i32;2]>, y_sorted_vec_left: Vec<[i32;2]>, x_sorted_vec_right: Vec<[i32;2]>, y_sorted_vec_right: Vec<[i32;2]>, distance_squared_in: i64) -> Vec<[i32;2]> {
+    fn closest_split_pair_2d_lr(x_sorted_vec_left: Vec<[i32;2]>, y_sorted_vec_left: Vec<[i32;2]>,
+                                x_sorted_vec_right: Vec<[i32;2]>, y_sorted_vec_right: Vec<[i32;2]>,
+                                distance_squared_input: i64) -> Vec<[i32;2]> {
 // NOTE: FAILURE: Algoritm failure.  Something is missing from this. it does not always find the closest
 // split pair and fails tests.
         let len = x_sorted_vec_left.len();
-        let mut variance_index: usize = 0;
+        let mut variance_index: usize = 1;
+        // base case.
+        // if the there are only 2 single element vectors, then we have our answer.
+        if len == 1 && x_sorted_vec_left.len() == 1 {
+            return vec!(x_sorted_vec_left[0],x_sorted_vec_right[0]);
+        }
 
-        let mut distance_squared_test_pairs: i64 = 0;
+        let mut distance_squared_test_pairs: i64 = std::i64::MAX;
         // determine number of indexes to expand from median to not exceed distance
-        while distance_squared_in > distance_squared_test_pairs {
-            let mut test_pair_vector: Vec<[i32;2]> = Vec::new();
+        while distance_squared_input < distance_squared_test_pairs {
+            let mut test_pair_vector: Vec<[i32;2]> =  Vec::with_capacity(2);
             // check that there is no negative index or index beyond length.
-            if len == variance_index  /*|| len+variance_index == len-1 */{
-                break;
-            }
-            variance_index += 1;
             test_pair_vector.push(x_sorted_vec_left[len-variance_index]);
             test_pair_vector.push(x_sorted_vec_right[variance_index-1]);
             distance_squared_test_pairs = distance_squared(&test_pair_vector);
+            if len == variance_index  /*|| len+variance_index == len-1 */{
+                break; // break if the size of the array is reached.
+            }
+            variance_index += 1;
         }
-        // // reassemble vector in order with the smaller subset of x-sorted points, unsorted.
-        // let mut distance_bound_vec: Vec<[i32;2]> = Vec::new();
+        // reassemble vector in order with the smaller subset of y-sorted points, unsorted.
+        let mut distance_bound_vec: Vec<[i32;2]> = Vec::new();
+        for i in 1..variance_index {
+            distance_bound_vec.push(x_sorted_vec_left[len-i]);
+            distance_bound_vec.push(x_sorted_vec_right[i-1]);
+        }
+        // reassemble vector in order with the smaller subset of x-sorted points, unsorted.
+        // let mut distance_bound_vec: Vec<[i32;2]> = Vec::with_capacity(2);
         // for i in 1..variance_index {
         //     distance_bound_vec.push(x_sorted_vec_left[len-i]);
         //     distance_bound_vec.push(x_sorted_vec_right[i-1]);
         // }
-        // reassemble vector in order with the smaller subset of y-sorted points, unsorted.
-        let mut distance_bound_vec: Vec<[i32;2]> = Vec::new();
-        for i in 1..variance_index {
-            distance_bound_vec.push(y_sorted_vec_left[len-i]);
-            distance_bound_vec.push(y_sorted_vec_right[i-1]);
-        }
+
         // per algorithm definition, sort by y element.
         distance_bound_vec = merge_sort_vector_2d(&distance_bound_vec, 1);
         let len2 = distance_bound_vec.len();
@@ -129,8 +143,11 @@ pub fn closest_pair_2d(x_sorted_vec: Vec<[i32;2]>, y_sorted_vec: Vec<[i32;2]>) -
         // let mut best_pair_distance_squared: i64 = distance_squared_in;
         let mut best_pair_distance_squared: i64 = std::i64::MAX;
         let test_max: usize;
-        if len2 == 0 {
-            test_max = 0;
+        if len2 == 0 || len2 == 1{
+            panic!("shouldn't happen.");
+        }
+        else if len2 == 2 {
+            return distance_bound_vec;
         }
         else if len2 < 8 {
             test_max = len2-1;
@@ -138,16 +155,19 @@ pub fn closest_pair_2d(x_sorted_vec: Vec<[i32;2]>, y_sorted_vec: Vec<[i32;2]>) -
         else {
             test_max = 7;
         }
+        // else {  /* Set this active to test O(n^2) component and test recursion. */
+        //     test_max = len2-1;
+        // }
         for i in 0..test_max {
             for j in 0..test_max {
                 // let test_vec: Vec<[i32;2]> =  distance_bound_vec[i];
-                let mut pair_test_vec: Vec<[i32;2]> = Vec::new();
+                let mut pair_test_vec: Vec<[i32;2]> = Vec::with_capacity(2);
                 pair_test_vec.push(distance_bound_vec[i]);
                 pair_test_vec.push(distance_bound_vec[j]);
 
                 if distance_squared(&pair_test_vec) < best_pair_distance_squared {
                     best_pair_distance_squared = distance_squared(&pair_test_vec);
-                    best_pair = pair_test_vec;
+                    best_pair = pair_test_vec.clone();
                 }
             }
         }
@@ -390,7 +410,7 @@ mod tests {
     }
 
     #[test]
-    fn test_closest_pair_exhuastive_small_vector(){
+    fn closest_pair_exhuastive_small_vector(){
         let test1_vec: Vec<[i32;2]> = vec![[1,10],[10,1],[101,100],[5,5],[2,7],[100,98],[99,100],[100,100],[20,4]];
         let closest_pair: Vec<[i32;2]> = closest_pair_exhaustive(test1_vec);
         let expected_pair = vec![[100,100],[101,100]];
@@ -398,20 +418,22 @@ mod tests {
     }
 
     #[test]
-    fn test_closest_pair_compare_efficient_exhaustive(){
+    fn closest_pair_compare_efficient_with_exhaustive(){
         #[allow(unused_assignments)] // allocating memory for a vector to be written.
         let mut test1_vec: Vec<[i32;2]> = Vec::with_capacity(_TEST_VEC as usize);
         let mut fail_counter = 0;
         let runs: i32 = 10;
         println!("Number of test runs on random vector data: {}", runs);
-        for _ in 0..runs{
+        for _ in 0..runs {
             test1_vec = generate_random_vector_2d(_TEST_VEC, _TEST_VEC_RANGE);
             let coord_struct = preprocess_coordinate_vector(&mut test1_vec);
             let closest_pair_exhaustive: Vec<[i32;2]> = closest_pair_exhaustive(test1_vec);
             let closest_pair_efficient: Vec<[i32;2]> = closest_pair_2d(coord_struct.x_sorted, coord_struct.y_sorted);
-            println!("results - exhaustive: {:?} d: {} | efficient: {:?} d: {}",
+            println!("results - exhaustive: {:?} d: {} (d^2: {:?})\n          efficient: {:?} d: {} (d^2: {:?})\n",
                      closest_pair_exhaustive, distance_pair(&closest_pair_exhaustive),
-                     closest_pair_efficient, distance_pair(&closest_pair_efficient));
+                     distance_squared(&closest_pair_exhaustive),
+                     closest_pair_efficient, distance_pair(&closest_pair_efficient), 
+                     distance_squared(&closest_pair_efficient));
             if !(closest_pair_exhaustive == closest_pair_efficient ||
                 closest_pair_exhaustive == invert_pair(closest_pair_efficient)) {
                 fail_counter += 1

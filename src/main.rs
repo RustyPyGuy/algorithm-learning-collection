@@ -25,8 +25,8 @@ for _ in 1..5{
     println!("---------------------------------------------------------");
     run_closest_coordinate_2d(1_000_000,90_000_000);
 }
-println!("\n---------------------------------------------------------");
-println!("Creating random vectors, timing the sorts, and checking the results. Here we go!");
+println!("\n---------------------------------------------------------\n
+         Creating random vectors, timing the sorts, and checking the results. Here we go!");
 run_sort_test_ownership(0,10);
 run_sort_test_borrowing(0,10);
 run_sort_builtin_slice_sort(0,10);
@@ -115,10 +115,12 @@ fn run_sort_builtin_unstable_sort(vector_size: i32, value_range: i32) {
     let duration = start.elapsed();
     let check_vec = random_vec_slice.to_vec();
     if check_sort_vec(&check_vec) == true {
-    println!("slice len: {} sorted (builtin slice.unstable_sort). Sort time: {:?}",random_vec.len(), duration);
+    println!("slice len: {} sorted (builtin slice.unstable_sort). Sort time: {:?}",
+    random_vec.len(), duration);
     }
     else{
-    println!("slice len: {} -NOT- successfully sorted. Run time of sort: {:?}",random_vec.len(), duration);
+    println!("slice len: {} -NOT- successfully sorted. Run time of sort: {:?}",
+             random_vec.len(), duration);
     }
 }
 
@@ -130,5 +132,6 @@ fn run_closest_coordinate_2d(vector_size: i32, value_range: i32){
     let start = Instant::now();
     let final_pair = coordinate::closest_pair_2d(coord_struct.x_sorted, coord_struct.y_sorted);
     let duration = start.elapsed();
-    println!("Coord vec length: {} min/max: {} run time: {:?}\n final pair: {:?}, distance: {:}", vector_size, value_range, duration, final_pair, coordinate::distance_pair(&final_pair));
+    println!("Coord vec length: {} min/max: {} run time: {:?}\nfinal pair: {:?}, distance: {:}",
+             vector_size, value_range, duration, final_pair, coordinate::distance_pair(&final_pair));
 }
