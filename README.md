@@ -26,6 +26,9 @@ two pairs in a coordinate vector with the smallest distance
 *NOTE: Closest Pair Algorithm is currently failing tests. Still working on this one.*
 - Test functions to check that the above algorithms are working as designed using randomized data and more primitive processor-expensive algorithms for comparison.
 
+# Versions
+Versions are tagged when they run mostly ok with an incrementing integer. No sub versions or numbers.
+
 # Use
 Prior to first build:
 `cargo update`
